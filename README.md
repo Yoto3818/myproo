@@ -2,7 +2,7 @@
 
 ## Project setup
 ```
-npm install草拟吗12312312
+npm install草拟吗12312312333333333333333333
 
 ```
 
