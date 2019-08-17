@@ -3,13 +3,27 @@
     <div class="search_input">
       <div class="search_input_wrapper">
         <i class="iconfont icon-sousuo"></i>
-        <input type="text" />
+        <input type="text" v-model="message" />
       </div>
     </div>
     <div class="search_result">
       <h3>电影/电视剧/综艺</h3>
       <ul>
-        <li>
+        <li v-for="item in seaData" :key="item.nm">
+          <div class="img">
+            <img :src=" item.img | setWH('128.180')" />
+          </div>
+          <div class="info">
+            <p>
+              <span>{{item.nm}}</span>
+              <span>{{item.sc}}</span>
+            </p>
+            <p>{{ item.enm }}</p>
+            <p>{{item.cat}}</p>
+            <p>{{item.rt}}</p>
+          </div>
+        </li>
+        <!-- <li>
           <div class="img">
             <img src="/images/movie_1.jpg" />
           </div>
@@ -22,21 +36,7 @@
             <p>剧情,喜剧,犯罪</p>
             <p>2018-11-16</p>
           </div>
-        </li>
-        <li>
-          <div class="img">
-            <img src="/images/movie_1.jpg" />
-          </div>
-          <div class="info">
-            <p>
-              <span>无名之辈</span>
-              <span>8.5</span>
-            </p>
-            <p>A Cool Fish</p>
-            <p>剧情,喜剧,犯罪</p>
-            <p>2018-11-16</p>
-          </div>
-        </li>
+        </li>-->
       </ul>
     </div>
   </div>
@@ -44,7 +44,49 @@
 
 <script>
 export default {
-  name: "Search"
+  name: "Search",
+  data() {
+    return {
+      message: "",
+      seaData: []
+    };
+  },
+
+  methods: {
+    //终止请求 的函数
+    cancelRequest() {
+      if (typeof this.source === "function") {
+        this.source("终止请求");
+      }
+    }
+  },
+
+  //watch里面监听input输入框的改变
+  watch: {
+    message(newVal) {
+      this.cancelRequest();
+      this.axios
+        .get("/api/searchList?cityId=10&kw=" + encodeURI(encodeURI(newVal)), {
+          cancelToken: new this.axios.CancelToken(c => {    //多次请求 会在请求结束之前 触发这个  
+            this.source = c;
+          })
+        })
+        .then(res => {
+          if (res.data.msg === "ok" && res.data.data.movies) {
+            this.seaData = res.data.data.movies.list;
+            console.log(this.seaData);
+          }
+        })
+        .catch(err => {
+          if (this.axios.isCancel(err)) {
+            console.log("Rquest canceled", err.message); //请求如果被取消，这里是返回取消的message
+          } else {
+            //handle error
+            console.log(err);
+          }
+        });
+    }
+  }
 };
 </script>
 
