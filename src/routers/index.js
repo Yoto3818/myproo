@@ -13,10 +13,10 @@ export default new Router({
     FilmRouter,
     cinemaRouter,
     mineRouter,
-    //重定向 匹配不到的地址都转到Film路径下
+    //重定向 匹配不到的地址都转到redirect路径下
     {
       path:'/*',
-      redirect:"/Film"
+      redirect:"/Film/nowPlaying"
     }
   ],
 });
