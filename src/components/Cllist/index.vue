@@ -108,6 +108,7 @@ export default {
       cinemalist: []
     };
   },
+  //我还帅
   mounted() {
     this.axios.get("/api/cinemaList?cityId=10").then(res => {
       if (res.data.msg === "ok") {
