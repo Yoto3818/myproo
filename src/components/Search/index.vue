@@ -64,9 +64,10 @@ export default {
   //watch里面监听input输入框的改变
   watch: {
     message(newVal) {
+      var cityId = this.$store.state.city.id
       this.cancelRequest();
       this.axios
-        .get("/api/searchList?cityId=10&kw=" + encodeURI(encodeURI(newVal)), {
+        .get("/api/searchList?cityId=+"+cityId+"&kw=" + encodeURI(encodeURI(newVal)), {
           cancelToken: new this.axios.CancelToken(c => {    //多次请求 会在请求结束之前 触发这个  
             this.source = c;
           })

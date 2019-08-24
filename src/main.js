@@ -6,6 +6,10 @@ import axios from 'axios'
 import VueAxios from 'vue-axios'
 Vue.use(VueAxios,axios)
 
+import Loading from "@/components/Loading"
+Vue.component('Loading',Loading);
+
+
 Vue.filter('setWH',(url , arg)=>{
   return url.replace(/w\.h/,arg);
 });

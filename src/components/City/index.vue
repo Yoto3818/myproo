@@ -1,27 +1,28 @@
 <template>
   <div class="city_body">
-    <div class="city_list">
+    <Loading v-if="isLoading" />
+    <div v-else class="city_list">
       <div class="city_hot">
         <h2>热门城市</h2>
         <ul class="clearfix">
-          <li v-for="(item,index) in hostList" :key="index">{{item.nm}}</li>
+          <li v-for="(item,index) in hostList" :key="index" @click="handleToCity(item.nm,item.id)">{{item.nm}}</li>
           <!-- <li>北京</li>
           <li>上海</li>
           <li>北京</li>
           <li>上海</li>
           <li>北京</li>
           <li>上海</li>
-          <li>北京</li> -->
+          <li>北京</li>-->
         </ul>
       </div>
       <div class="city_sort" ref="city_sort">
-        <div v-for="(item) in cityList" :key="item.index" >
-          <h2 >{{item.index}}</h2>
+        <div v-for="(item) in cityList" :key="item.index">
+          <h2>{{item.index}}</h2>
           <ul>
-            <li v-for="itemList in item.list" :key="itemList.list">{{itemList.nm}}</li>
+            <li v-for="itemList in item.list" :key="itemList.list" @click="handleToCity(itemList.nm,itemList.id)">{{itemList.nm}}</li>
             <!-- <li>鞍山</li>
             <li>安庆</li>
-            <li>安阳</li> -->
+            <li>安阳</li>-->
           </ul>
         </div>
         <!-- <div>
@@ -68,42 +69,63 @@
             <li>蚌埠</li>
             <li>包头</li>
           </ul>
-        </div> -->
+        </div>-->
       </div>
     </div>
     <div class="city_index">
       <ul>
-        <li v-for="(item,index) in cityList" :key="item.index" @touchstart="handleToIndex(index)">{{item.index}}</li>
+        <li
+          v-for="(item,index) in cityList"
+          :key="item.index"
+          @touchstart="handleToIndex(index)"
+        >{{item.index}}</li>
         <!-- <li>B</li>
         <li>C</li>
         <li>D</li>
-        <li>E</li> -->
+        <li>E</li>-->
       </ul>
     </div>
   </div>
 </template>
 
 <script>
-import { hostname } from "os";
+// import { hostname } from "os";
 import { constants } from "fs";
+
 export default {
   name: "City",
   data() {
     return {
       cityList: [],
-      hostList: []
+      hostList: [],
+      isLoading: true
     };
   },
   mounted() {
-    this.axios.get("/api/cityList").then(res => {
-      console.log(res);
-      if (res.data.msg === "ok") {
-        var cities = res.data.data.cities;
-        var { cityList , hostList } = this.formatCityList(cities);
-        this.cityList = cityList;
-        this.hostList = hostList;
-      }
-    });
+    // 获取本地存储
+    var cityList = window.localStorage.getItem("cityList");
+    var hostList = window.localStorage.getItem("hostList");
+    //如果数据存在  直接用储存的数据  否则去请求
+    if (cityList && hostList) {
+      this.isLoading = false;
+      this.cityList = JSON.parse(cityList);
+      this.hostList = JSON.parse(hostList);
+    } else {
+      this.axios.get("/api/cityList").then(res => {
+        console.log(res);
+        if (res.data.msg === "ok") {
+          this.isLoading = false;
+          var cities = res.data.data.cities;
+          var { cityList, hostList } = this.formatCityList(cities);
+          this.cityList = cityList;
+          this.hostList = hostList;
+
+          //设置一下本地存储
+          window.localStorage.setItem("cityList", JSON.stringify(cityList));
+          window.localStorage.setItem("hostList", JSON.stringify(hostList));
+        }
+      });
+    }
   },
   methods: {
     formatCityList(cities) {
@@ -111,13 +133,12 @@ export default {
       var hostList = [];
 
       // 热门城市
-      for(var i=0;i<cities.length;i++){
-        if(cities[i].isHot===1){
-          hostList.push(cities[i])
+      for (var i = 0; i < cities.length; i++) {
+        if (cities[i].isHot === 1) {
+          hostList.push(cities[i]);
         }
       }
-      console.log(hostList)
-
+      console.log(hostList);
 
       //所有城市
       for (var i = 0; i < cities.length; i++) {
@@ -160,17 +181,25 @@ export default {
       console.log(cityList);
 
       return {
-                cityList,
-                hostList
-            };
+        cityList,
+        hostList
+      };
     },
 
     //监听滚动
-    handleToIndex(index){
-       var h2 = this.$refs.city_sort.getElementsByTagName('h2');  //拿到所有的 h2
-        // console.log(h2)
-        this.$refs.city_sort.parentNode.scrollTop = h2[index].offsetTop; //拿到citi_li 的坐标和鼠标点击h2的坐标相等
-        // console.log(this.$refs.city_sort.parentNode)
+    handleToIndex(index) {
+      var h2 = this.$refs.city_sort.getElementsByTagName("h2"); //拿到所有的 h2
+      // console.log(h2)
+      this.$refs.city_sort.parentNode.scrollTop = h2[index].offsetTop; //拿到citi_li 的坐标和鼠标点击h2的坐标相等
+      // console.log(this.$refs.city_sort.parentNode)
+    },
+
+    //VUEX 发送过去
+    handleToCity(nm,id){
+      this.$store.commit("city/CITY_INFO",{nm,id})
+      window.localStorage.setItem('nowNm',nm)
+      window.localStorage.setItem('nowId',id)
+      this.$router.push('/Film/nowPlaying')
     }
   }
 };

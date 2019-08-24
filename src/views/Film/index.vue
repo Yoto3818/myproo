@@ -5,18 +5,21 @@
     <div id="content">
       <div class="movie_menu">
         <router-link to="/Film/city" tag="div" class="city_name">
-          <span>大连</span>
+          <span>{{$store.state.city.nm}}</span>
           <i class="iconfont icon-lower-triangle"></i>
         </router-link>
         <div class="hot_swtich">
           <router-link to="/Film/nowPlaying" tag="div" class="hot_item">正在热映</router-link>
-          <router-link to="/Film/willPlaying"  tag="div" class="hot_item">即将上映</router-link>
+          <router-link to="/Film/willPlaying" tag="div" class="hot_item">即将上映</router-link>
         </div>
         <router-link to="/Film/search" tag="div" class="search_entry">
           <i class="iconfont icon-sousuo"></i>
         </router-link>
       </div>
-      <router-view></router-view>
+      
+      <keep-alive>
+        <router-view></router-view>
+      </keep-alive>
     </div>
 
     <TabBar />
@@ -36,7 +39,6 @@ export default {
 </script>
 
 <style scoped>
-
 #content .movie_menu {
   width: 100%;
   height: 45px;
