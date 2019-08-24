@@ -1,6 +1,7 @@
 <template>
   <div class="cinema_body">
-    <ul>
+    <Loading v-if="isLoading" />
+    <ul v-else>
       <li v-for="item in cinemalist" :key="item.id">
         <div>
           <span>{{item.nm}}</span>
@@ -105,15 +106,21 @@ export default {
   name: "Cllist",
   data() {
     return {
-      cinemalist: []
+      cinemalist: [],
+      isLoading:true,
+      prevCityId : -1
     };
   },
-  //我还帅
-  mounted() {
-    this.axios.get("/api/cinemaList?cityId=10").then(res => {
+  
+  activated() {
+    var cityId = this.$store.state.city.id;
+    if( this.prevCityId === cityId ){ return; }
+    this.axios.get("/api/cinemaList?cityId="+cityId).then(res => {
       if (res.data.msg === "ok") {
         this.cinemalist = res.data.data.cinemas;
         console.log(this.cinemalist);
+
+        this.isLoading = false
       }
     });
   },

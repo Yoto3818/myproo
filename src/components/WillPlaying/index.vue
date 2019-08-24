@@ -1,6 +1,7 @@
 <template>
   <div class="movie_body">
-    <ul>
+    <Loading v-if="isLoading" />
+    <ul v-else>
       <li v-for="item in willData" :key="item.id">
         <div class="pic_show">
           <img :src="item.img | setWH('128.180')" />
@@ -39,14 +40,19 @@ export default {
   name: "WillPlaying",
   data() {
     return {
-      willData:[]
+      willData:[],
+      isLoading:true,
+      prevCityId : -1
     }
   },
-  mounted() {
-    this.axios.get("/api/movieOnInfoList?cityId=10").then(res=>{
+  activated() {
+    var cityId = this.$store.state.city.id;
+    if( this.prevCityId === cityId ){ return; }
+    this.axios.get("/api/movieOnInfoList?cityId="+cityId).then(res=>{
       if(res.data.msg=="ok"){
         this.willData=res.data.data.movieList
         console.log(this.willData)
+        this.isLoading=false
       }
     })
   },

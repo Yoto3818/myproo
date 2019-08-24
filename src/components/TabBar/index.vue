@@ -1,7 +1,7 @@
 <template>
   <footer id="footer">
     <ul>
-      <router-link tag="li" to="/Film">
+      <router-link tag="li" to="/Film/nowPlaying">
         <i class="iconfont icon-dianying"></i>
         <p>电影</p>
       </router-link>
