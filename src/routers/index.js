@@ -6,6 +6,8 @@ import mineRouter from './Mine'
 
 Vue.use(Router);
 
+
+
 export default new Router({
   mode: 'history',
   base: process.env.BASE_URL,
@@ -13,10 +15,9 @@ export default new Router({
     FilmRouter,
     cinemaRouter,
     mineRouter,
-    //重定向 匹配不到的地址都转到redirect路径下
     {
-      path:'/*',
-      redirect:"/Film/nowPlaying"
+      path : '/*',
+      redirect : '/Film/nowPlaying'
     }
   ],
 });

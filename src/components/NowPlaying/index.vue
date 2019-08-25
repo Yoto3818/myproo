@@ -1,12 +1,12 @@
 <template>
   <div class="movie_body" ref="movie_body">
-     <!-- Css3动画加载 -->
+    <!-- Css3动画加载 -->
     <Loading v-if="isLoading" />
     <ul v-else>
       <li class="pullDown">{{pullDownMsg}}</li>
       <li v-for="item in movieList" :key="item.id">
-        <div class="pic_show" @tap="handleToDetail">
-          <img :src="item.img | setWH('128.180') " />
+        <div class="pic_show"  @tap="handleToDetail(item.id)">
+          <img :src="item.img | setWH('128.180') "  />
         </div>
         <div class="info_list">
           <h2>
@@ -53,27 +53,29 @@ export default {
     return {
       movieList: [],
       pullDownMsg: "",
-      isLoading:true  ,     // Css3动画加载
-      prevCityId : -1
+      isLoading: true, // Css3动画加载
+      prevCityId: -1
     };
   },
 
   activated() {
-    var cityId = this.$store.state.city.id
+    var cityId = this.$store.state.city.id;
     //如果相等  不请求数据
-    if( this.prevCityId === cityId ){ return; }
-    
-    this.axios.get("/api/movieOnInfoList?cityId="+cityId).then(res => {
+    if (this.prevCityId === cityId) {
+      return;
+    }
+
+    this.axios.get("/api/movieOnInfoList?cityId=" + cityId).then(res => {
       // console.log(res);
       if ((res.data.msg = "ok")) {
         this.movieList = res.data.data.movieList;
         // console.log(this.movieList);
 
         // Css3动画加载
-        this.isLoading=false
+        this.isLoading = false;
         // 让prevCityId = 点进来的id  出去做判断
         this.prevCityId = cityId;
-       
+
         //移动端vue滚动效果
         this.$nextTick(() => {
           var scroll = new BScroll(this.$refs.movie_body, {
@@ -107,9 +109,8 @@ export default {
   },
 
   methods: {
-    handleToDetail() {
-      // console.log("123");
-      // console.log(this.prevCityId)
+    handleToDetail(movieId) {
+      this.$router.push("/Film/detail/1/" + movieId);
     }
   }
 };

@@ -4,6 +4,7 @@ import router from './routers'
 import store from './stores'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
+
 Vue.use(VueAxios,axios)
 
 import Loading from "@/components/Loading"
@@ -15,6 +16,9 @@ Vue.filter('setWH',(url , arg)=>{
 });
 
 Vue.config.productionTip = false
+
+
+
 
 new Vue({
   router,
