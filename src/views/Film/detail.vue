@@ -7,7 +7,7 @@
     <Loading v-if="isLoading" />
     <div v-else id="content" class="contentDetail">
       <div class="detail_list">
-        <div class="detail_list_bg"></div>
+        <div class="detail_list_bg" :style="{background:'url(' + detailMovie.img.replace(/w\.h/,'148.208') + ')'}"></div>
         <div class="detail_list_filter"></div>
         <div class="detail_list_content">
           <div class="detail_list_img">
@@ -101,7 +101,7 @@ export default {
   mounted() {
     console.log(this.movieId);
     this.axios
-      .get("http://39.97.33.178/api/detailmovie?movieId=" + this.movieId)
+      .get("/api/detailmovie?movieId=" + this.movieId)
       .then(res => {
         // console.log(res)
         if (res.data.msg === "ok") {
@@ -117,8 +117,8 @@ export default {
                 disableOnInteraction: true
               },
               slidesPerView: "auto",
-              freeMode: true,
-              freeModeSticky: true
+              freeMode: true,   //滑动只滑动自由滑   false只滑一格
+              freeModeSticky: true   
             });
           });
         }

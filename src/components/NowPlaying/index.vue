@@ -22,7 +22,7 @@
         </div>
         <div class="btn_mall">购票</div>
       </li>
-      <li>
+      <!-- <li>
         <div class="pic_show">
           <img src="/images/movie_2.jpg" />
         </div>
@@ -36,7 +36,7 @@
           <p>今天56家影院放映443场</p>
         </div>
         <div class="btn_mall">购票</div>
-      </li>
+      </li> -->
     </ul>
   </div>
 </template>
